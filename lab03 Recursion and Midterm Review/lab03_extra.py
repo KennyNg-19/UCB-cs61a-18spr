@@ -68,6 +68,7 @@ def is_palindrome(n):
     """
     x, y = n, 0
     # 不太会....
+    # 以下的lambda，可以直接访问local var?
     f = lambda: y * 10 + (x % 10) # 很巧妙迭代构造(12321)：0+1， 1*10+2, 12*10+3, 123*10+2
     while x > 0:
         x, y = x // 10, f()
@@ -122,6 +123,7 @@ def is_prime(n):
 
     return helper(2)
 
+# 简单 pass
 def interleaved_sum(n, odd_term, even_term):
     """Compute the sum odd_term(1) + even_term(2) + odd_term(3) + ..., up
     to n.
