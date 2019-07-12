@@ -69,7 +69,11 @@ def make_restaurant(name, location, categories, price, reviews):
     categories, price, and reviews for that restaurant."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
-    return [name, location, categories, price, reviews]
+    # return [name, location, categories, price, reviews]
+
+    # 正解: 使用reviews的func 保证ABSTRACTION, 而且正好可以读起来"" 无需知道reviews的具体数据结构
+    return [name, location, categories, price, /
+            [review_rating(r) for r in reviews if review_restaurant_name(r) == name]]
     # END Question 2
 
 def restaurant_name(restaurant):
@@ -106,8 +110,14 @@ def restaurant_ratings(restaurant):
     restaurant based on the reviews of the restaurant."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
-
     # return [review[1] for review in restaurant[4]] 
-    # AbstractionViolation: Can't use [] notation on Review object----use getter, not [x] notation ATD object
+    # AbstractionViolation: 因为abstraction后，我们只知道restaurant是个多个rating in a list,
+    # 而不该知道单个rating = [restaurant_name, rating]这个结构！！！
+    # use "getter", not [x] notation ATD(Review) object
+    
+    
     return [review_rating(review) for review in restaurant[4]]
+
+    # 最佳解：在上面make的时候就用了review 的function
+    return restaurant[4] 
     # END Question 2
