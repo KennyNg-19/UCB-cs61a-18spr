@@ -73,7 +73,7 @@ def make_restaurant(name, location, categories, price, reviews):
 
     # 正解: 使用reviews的func 保证ABSTRACTION, 而且正好可以读起来 
     # "for every review, get it rating by restaurant name" 无需知道reviews的具体数据结构
-    return [name, location, categories, price, /
+    return [name, location, categories, price, \
             [review_rating(r) for r in reviews if review_restaurant_name(r) == name]]
     # END Question 2
 
