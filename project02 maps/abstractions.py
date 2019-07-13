@@ -58,7 +58,7 @@ def user_rating(user, restaurant_name):
     # user_review: (restaurant_name, rating) from dict
     user_review = reviewed_by_user[restaurant_name]
 
-    # get user_review[1]
+    # get user_review[1], an float
     return review_rating(user_review)
 
 

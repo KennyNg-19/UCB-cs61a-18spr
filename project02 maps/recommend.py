@@ -180,6 +180,20 @@ def rate_all(user, restaurants, feature_fns):
     reviewed = user_reviewed_restaurants(user, restaurants)
     # BEGIN Question 9
     "*** YOUR CODE HERE ***"
+    # trick: 为了避免通过difference of lists来获取unreviewed rst，
+    # 1、先用predictor算一遍
+    # predictor is a func(rst) with params a & b:  return b * feature_fn(restaurant) + a
+    dic = {restaurant_name(rst): predictor(rst) for rst in restaurants}
+
+    # 2. 再用可以已有的reviewed重新算部分
+    # reviewed is a list of rst, but user_rating needs rst_name: needs restaurant_name(rst)
+    for rst in reviewed:
+        # update dict
+        dic[restaurant_name(rst)] = user_rating(user, restaurant_name(rst))
+
+    # BETTER solution： dict 自带update func，这样就不用管顺序了
+
+    return dic
     # END Question 9
 
 
