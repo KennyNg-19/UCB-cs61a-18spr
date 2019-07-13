@@ -115,9 +115,6 @@ def restaurant_ratings(restaurant):
     # AbstractionViolation: 因为abstraction后，我们只知道restaurant是个多个rating in a list,
     # 而不该知道单个rating = [restaurant_name, rating]这个结构！！！
     # use "getter", not [x] notation ATD(Review) object
-    
-    
-    return [review_rating(review) for review in restaurant[4]]
 
     # 最佳解：在上面make的时候就用了review 的function
     return restaurant[4] 
