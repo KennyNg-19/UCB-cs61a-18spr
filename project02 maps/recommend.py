@@ -24,7 +24,7 @@ def find_closest(location, centroids):
     # return min([distance(location, centroid) for centroid in centroids])
     # 问题：how to get index of min in list?
 
-    # 正解：min + built-in key, 对于多参数的func，只要在lambda那里定义好iterate的参数即可！!
+    # 正解：min + built-in key=lambda, 对于多参数的func，只要在lambda那里定义好iterate的参数即可！!
     return min(centroids, key=lambda centroid: distance(location, centroid))
     # END Question 3
 
@@ -183,17 +183,21 @@ def rate_all(user, restaurants, feature_fns):
     # trick: 为了避免通过difference of lists来获取unreviewed rst，
     # 1、先用predictor算一遍
     # predictor is a func(rst) with params a & b:  return b * feature_fn(restaurant) + a
-    dic = {restaurant_name(rst): predictor(rst) for rst in restaurants}
+    ratings = {restaurant_name(rst): predictor(rst) for rst in restaurants}
 
     # 2. 再用可以已有的reviewed重新算部分
     # reviewed is a list of rst, but user_rating needs rst_name: needs restaurant_name(rst)
     for rst in reviewed:
         # update dict
-        dic[restaurant_name(rst)] = user_rating(user, restaurant_name(rst))
+        ratings[restaurant_name(rst)] = user_rating(user, restaurant_name(rst))
 
-    # BETTER solution： dict 自带update func，这样就不用管顺序了
-
-    return dic
+    '''
+    BETTER solution： dict 自带update func，就不用管先后顺序了
+    ratings = {restaurant_name(rst): user_rating(user, restaurant_name(rst)) for rst in reviewed}
+    ratings_predicted = {restaurant_name(rst): predictor(rst) for rst in restaurants if restaurant_name(rst) not in ratings}
+    ratings.update(ratings_predicted)
+    '''
+    return ratings
     # END Question 9
 
 
@@ -206,6 +210,9 @@ def search(query, restaurants):
     """
     # BEGIN Question 10
     "*** YOUR CODE HERE ***"
+    # 使用 restaurant_categories(restaurant), 
+    # 注意query是single str, 允许多类别，restaurant_categories(rst)是list of str----所以用in
+    return [ rst for rst in restaurants if query in restaurant_categories(rst)]
     # END Question 10
 
 

@@ -1,0 +1,33 @@
+make_user(
+    'Kenny Wu',      # name
+    [                   # reviews
+        # Northside restaurants
+        make_review('Jasmine Thai', 4.0),
+        make_review('Gomnaru Restaurant', 4.5),
+        make_review('Top Dog 2', 5.0),
+        make_review('Subway', 4.0),
+        make_review('The Pho Bar', 4.5),
+        make_review('Aki Japanese Restaurant', 5.0),
+        make_review('Zach\'s Snacks', 4.5),
+        make_review('San Francisco Soup Company', 4.1),
+        # Westside restaurants
+        make_review('La Cascada Taqueria', 1.0),
+        make_review('Stella Nonna Milwaukee Fish Fry', 3.0),
+        make_review('Cinnaholic', 0.5),
+        make_review('Saturn Cafe', 1.5),
+        make_review('Saigon Eats', 1.0),
+        make_review('Suya African Caribbean Grill', 4.5),
+        make_review('Cafe Rio', 1.4),
+        # Southside restaurants
+        make_review('Cafe 3', 2.0),
+        make_review('Pancho\'s', 1.0),
+        make_review('Peking Express', 3.5),
+        make_review('Sun Hong Kong Restaurant', 1.25),
+        make_review('Henry\'s', 1.45),
+        make_review('Durant Square - Asian Ghetto', 1.5),
+        make_review('Cheese \'N\' Stuff', 2.53),
+        make_review('Babette', 1.25),
+        make_review('Bear\'s Ramen House', 4.5),
+        make_review('Planet Kebob & Cafe', 4.5),
+    ]
+)
