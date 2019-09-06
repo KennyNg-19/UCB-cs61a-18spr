@@ -151,6 +151,7 @@ def replace_elem(lst, index, elem):
     """
     assert index >= 0 and index < len(lst), 'Index is out of bounds'
     "*** YOUR CODE HERE ***"
+    
     # import copy
     # copy = copy.copy(lst)  浅拷贝这里也可以, 因为 copy[index] 属于不可变对象，
     #                       copy[index]会绑定到新的变量上，而 lst[index] 的由于没有修改
