@@ -95,10 +95,16 @@ def replace_leaf(t, old, new):
     True
     """
     "*** YOUR CODE HERE ***"
-    if label(tree) == old:
-        return tree(new, branches(tree))
+    # 因为名字叫replace_leaf, 只管leaf
+    if is_leaf(t):
+        if label(t) == old:
+            return tree(new)
+        # 不是要找的node, 就不改变值
+        
+        return t
     else:
-        return replace_leaf(branches(tree), old, new)
+        return tree(label(t), [replace_leaf(b, old, new) for b in branches(t)])
+    
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
