@@ -1,0 +1,10 @@
+q2 汉纳塔 没做
+
+q4 递归函数的几个分支(尤其是base case的)返回类型，没有要求一定一样！
+
+q6 OOP中 # constant可以用ClassName来访问,即当做类变量; 非常量 bound to self，只能用self来访问！
+
+withdraw_fee = 1 # constant
+free_withdrawals = 2 # 非常量 
+
+q10 OOP module design, 调用封装了的 withdraw！！

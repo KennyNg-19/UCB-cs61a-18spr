@@ -99,13 +99,13 @@ def replace_leaf(t, old, new):
     if is_leaf(t):
         if label(t) == old:
             return tree(new)
-        # 不是要找的node, 就不改变值
-        
+            # end 
+        # 不是要找的node, 就不改变值        
         return t
     else:
         return tree(label(t), [replace_leaf(b, old, new) for b in branches(t)])
     
-
+# Q2 #
 def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
@@ -159,6 +159,7 @@ def sides(m):
 def is_side(m):
     return not is_mobile(m) and not is_weight(m) and type(label(m)) == int
 
+# constructor: side类似intermidiate node
 def side(length, mobile_or_weight):
     """Construct a side: a length of rod with a mobile or weight at the end."""
     return tree(length, [mobile_or_weight])
@@ -173,18 +174,24 @@ def end(s):
     assert is_side(s), "must call end on a side"
     return branches(s)[0]
 
+# Q3 #
+# Constructor
 def weight(size):
     """Construct a weight of some size."""
     assert size > 0
     "*** YOUR CODE HERE ***"
+    return tree(size)
 
 def size(w):
     """Select the size of a weight."""
     "*** YOUR CODE HERE ***"
+    assert is_weight(w), "must call size on a weight "
+    return label(w)
 
 def is_weight(w):
     """Whether w is a weight, not a mobile."""
     "*** YOUR CODE HERE ***"
+    return is_leaf(w)
 
 def examples():
     t = mobile(side(1, weight(2)),
@@ -196,6 +203,8 @@ def examples():
     return (t, u, v)
 
 
+# 无需×length of sides，单纯sum即可
+# 本身就是递归函数！！
 def total_weight(m):
     """Return the total weight of m, a weight or mobile.
 
@@ -213,6 +222,8 @@ def total_weight(m):
         assert is_mobile(m), "must get total weight of a mobile or a weight"
         return sum([total_weight(end(s)) for s in sides(m)])
 
+# Q4 #
+# 大前提，一定是complete 二叉树，不然没法balance
 def balanced(m):
     """Return whether m is balanced.
 
@@ -230,6 +241,26 @@ def balanced(m):
     False
     """
     "*** YOUR CODE HERE ***"
+    # 大前提，一定是complete 二叉树，不然没法balance
+    
+    # 递归函数的几个分支(尤其是base case的)返回类型，没有要求一定一样！
+    if is_weight(m): # 特殊的：递归到weight，不能返回boolean，而是weight数值
+        return size(m)
+    
+    # 自顶向下
+    # 1. 先考虑这个mobile的两侧: 用end不需递归,可以直接算出来？？？错，是total_weight已经在递归了！
+    # 不要用list indexing 虽然知道是二叉树sides of a mobile is a list of sides,
+    # we can index into the list returned by sides(m) for some mobile m without committing a DAV.
+    left, right = [total_weight(end(x)) * length(x) for x in sides(m)]
+    print("compute left&right", left, right)
+    if left != right:
+        return False
+
+    # 2. 递归到余下的side
+    for side in sides(m):
+        if not balanced(end(side)):
+            return False
+    return True
 
 #######
 # OOP #
@@ -278,7 +309,12 @@ class Account:
         """Return the number of years until balance would grow to amount."""
         assert self.balance > 0 and amount > 0 and self.interest > 0
         "*** YOUR CODE HERE ***"
+        year, balance_cp = 0, self.balance
+        while balance_cp < amount:
+            balance_cp, year = balance_cp*(1 + self.interest), year + 1
+        return year
 
+# Q6 #
 class FreeChecking(Account):
     """A bank account that charges for withdrawals, but the first two are free!
 
@@ -303,10 +339,17 @@ class FreeChecking(Account):
     >>> ch.withdraw(5)  # Not enough to cover fee + withdraw
     'Insufficient funds'
     """
-    withdraw_fee = 1
-    free_withdrawals = 2
+    withdraw_fee = 1 # constant可以用ClassName来访问
+    free_withdrawals = 2 # 非常量 bound to self，只能用self来访问！
 
     "*** YOUR CODE HERE ***"
+    def withdraw(self, amount):
+        if self.free_withdrawals > 0:
+            self.free_withdrawals -= 1
+            return Account.withdraw(self, amount)
+        else:
+            # 间接实现checkingAccount的withdraw
+            return Account.withdraw(self, amount + FreeChecking.withdraw_fee)
 
 ############
 # Mutation #
@@ -333,6 +376,16 @@ def make_counter():
     5
     """
     "*** YOUR CODE HERE ***"
+    times = {} # dict
+    def counter(s):
+        nonlocal times
+        if s in times: # check key
+            times[s] += 1
+        else:
+            times[s] = 1
+
+        return times[s]
+    return counter
 
 def make_fib():
     """Returns a function that returns the next Fibonacci number
@@ -354,7 +407,25 @@ def make_fib():
     12
     """
     "*** YOUR CODE HERE ***"
+    # special case: 从0开始，稍微注意一下
+    # 所以单词返回fn即可, 且需要在new assginment前 先temp保留下
+    fn_add1, fn = 1, 0
+        
+    def fib():        
+        nonlocal fn_add1, fn
+        
+        return_value = fn
+        
+        # new assignment        
+        new = fn_add1 + fn
+        fn = fn_add1
+        fn_add1 = new
 
+        return return_value
+
+    return fib
+
+# Q9 #
 def make_withdraw(balance, password):
     """Return a password-protected withdraw function.
 
@@ -368,7 +439,7 @@ def make_withdraw(balance, password):
     >>> error
     'Incorrect password'
     >>> new_bal = w(25, 'hax0r')
-    >>> new
+    >>> new_bal
     50
     >>> w(75, 'a')
     'Incorrect password'
@@ -384,7 +455,33 @@ def make_withdraw(balance, password):
     True
     """
     "*** YOUR CODE HERE ***"
+    # 要每次调用withdraw才使用的incorrect pswlist必须声明在这个frame, 
+    # 但不用non-local访问，list是mutable ！！
+    incorrect_pswd = []
+    def withdraw(amount, input_pswd):
+        nonlocal balance
+        if len(incorrect_pswd) >= 3:
+            return "Your account is locked. Attempts: " + repr(incorrect_pswd[:3]) # 自动unboxing?
+        
+        elif password != input_pswd:
+            if input_pswd not in incorrect_pswd:
+                incorrect_pswd.append(input_pswd)            
+            return 'Incorrect password'
+        
+        else:
+            if amount > balance:
+               return 'Insufficient funds'
+            balance = balance - amount
+            return balance
+    
+    return withdraw
 
+# Q10 #
+# 调用封装了的 withdraw！！
+""" 
+joint account: new pw + account
+old_password不存在时，还是会加到account里面的incorrect list！！！
+"""
 def make_joint(withdraw, old_password, new_password):
     """Return a password-protected withdraw function that has joint access to
     the balance of withdraw.
@@ -394,8 +491,8 @@ def make_joint(withdraw, old_password, new_password):
     75
     >>> make_joint(w, 'my', 'secret')
     'Incorrect password'
-    >>> j = make_joint(w, 'hax0r', 'secret')
-    >>> w(25, 'secret')
+    >>> j = make_joint(w, 'hax0r', 'secret') # new joint account: new pw + account
+    >>> w(25, 'secret') # old account, 没有new pw
     'Incorrect password'
     >>> j(25, 'secret')
     50
@@ -405,11 +502,11 @@ def make_joint(withdraw, old_password, new_password):
     'Insufficient funds'
 
     >>> j2 = make_joint(j, 'secret', 'code')
-    >>> j2(5, 'code')
+    >>> j2(5, 'code') 
     20
     >>> j2(5, 'secret')
     15
-    >>> j2(5, 'hax0r')
+    >>> j2(5, 'hax0r') # 不是累积了j1的，而是原account的 w = make_withdraw(100, 'hax0r')！！
     10
 
     >>> j2(25, 'password')
@@ -424,6 +521,21 @@ def make_joint(withdraw, old_password, new_password):
     "Your account is locked. Attempts: ['my', 'secret', 'password']"
     """
     "*** YOUR CODE HERE ***"
+    # adding password failed
+    response = withdraw(0, old_password) # 输入0，保证不返回'Insufficient funds'
+    if type(response) == str: 
+        return response # the failing message
+
+    # else, old_pswd正确，return a number ---- exisitng balance( - 0)
+    def joint(amount, pw):
+        # [old_password, new_password] 是存在make_joint里面的！！所以一次make_joint最多存俩，
+        if pw in [old_password, new_password]:
+            return withdraw(amount, old_password)
+        # 或者跟 account里之前的比！
+        else:
+            return withdraw(amount, pw)
+
+    return joint
 
 ###################
 # Extra Questions #
