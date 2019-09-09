@@ -1,0 +1,5 @@
+q1 func作为obj 也可以自带属性+赋值！ 
+尤其是，递归中，连续被call，该属性可以传递，在下一次call中使用！！
+
+因此也得先声明func，才能修改他的属性：不能先写，报错local variable 'next_fib' referenced before assignment
+        
