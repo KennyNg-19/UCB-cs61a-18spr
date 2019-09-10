@@ -62,6 +62,7 @@ def digits(n):
     while n > 0:
         n, last = n // 10, n % 10
         "*** YOUR CODE HERE ***"
+        s = Link(last, s)
     return s
 
 class VendingMachine:
@@ -136,7 +137,7 @@ class MissManners:
     >>> v = VendingMachine('teaspoon', 10)
     >>> v.restock(2)
     'Current teaspoon stock: 2'
-
+    
     >>> m = MissManners(v)
     >>> m.ask('vend')
     'You must learn to say please first.'
@@ -169,3 +170,12 @@ class MissManners:
         if not message.startswith(magic_word):
             return 'You must learn to say please first.'
         "*** YOUR CODE HERE ***"
+
+        # get the request in string
+        request = message[len(magic_word):]
+
+        if hasattr(self.obj, request): # 不需要担心str的引号！！
+            return getattr(self.obj, request)(*args) # get返回的就是函数名！！
+        else:
+            return 'Thanks for asking, but I know not how to {0}.'.format(request)
+
