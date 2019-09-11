@@ -22,8 +22,8 @@ def f_then_g(f, g, n):
 grow = lambda n: f_then_g()
 shrink = lambda n: f_then_g()
 
-from ucb import trace
-@trace
+# from ucb import trace
+# @trace
 def count_partitions(n, m):
     """Count the partitions of n using parts up to size m.
 
